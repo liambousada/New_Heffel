@@ -40,7 +40,7 @@ target_url = "https://www.heffel.com/Links/Results_Choose_E"
 
 try:
     # Define the headers (column names) as a list
-    column_names = ['Artist', 'Title', 'Day', 'Month', 'Year', 'Price', 'Lowbound', 'Highbound',  'Width', 'Height', 'Essay', 'Provenance', 'Image']
+    column_names = ['Auction', 'Lot Number', 'Artist', 'Title', 'Day', 'Month', 'Year', 'Price', 'Lowbound', 'Highbound',  'Width', 'Height', 'Medium', 'Essay', 'Provenance', 'Image']
 
     # Create the empty DataFrame using the 'columns' parameter
     df = pd.DataFrame(columns=column_names)
@@ -136,7 +136,6 @@ try:
             price, lowbound, highbound, width, height, medium, 
             essay, provenance, image_link
             ]
-
 
 except Exception as e:
     print(f"An error occurred during WebDriver operation: {e}")
