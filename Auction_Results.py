@@ -10,6 +10,7 @@ import random
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.edge.options import Options
 from parse import parse_date, parse_estimate, parse_price, parse_size
+from email import send_error_email
 
 def human_delay(min_seconds=2, max_seconds=5):
     """
@@ -144,7 +145,7 @@ except Exception as e:
     full_error = traceback.format_exc()
     
     # Send the email notification
-    # send_error_email(full_error)
+    send_error_email(full_error)
 
 finally:
     # 5. End the session (Close the browser)
