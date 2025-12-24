@@ -64,7 +64,7 @@ def parse_price(price):
 def parse_estimate(estimate):
     try:
         decon = estimate.strip().split()
-        
+
         lowbound = dolla_remover(decon[1])
         highbound = dolla_remover(decon[3])  
         # lowbound, highound
@@ -86,21 +86,3 @@ def parse_date(date):
     except Exception as e:
         print(e)
         return "N/A","N/A","N/A"
-
-    
-    
-width, height = parse_size("22     1/4 x 25  in,")
-print(width)
-print(height)
-
-lowbound, highbound = parse_estimate("      estimate:          $30,000 - $50,000 CAD")
-print(lowbound)
-print(highbound)
-
-price = parse_price("     sold for: $35,100      ")
-print(price)
-
-day, month, year = parse_date("November 25, 2010 | 10:00 PM")
-print(day)
-print(month)
-print(year)
