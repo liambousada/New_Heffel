@@ -10,7 +10,7 @@ import random
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.edge.options import Options
 from parse import parse_date, parse_estimate, parse_price, parse_size
-from email import send_error_email
+from Email import send_error_email
 
 def human_delay(min_seconds=2, max_seconds=5):
     """
