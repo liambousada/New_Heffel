@@ -155,4 +155,4 @@ finally:
 
     pd.set_option('display.max_columns', None)
     print(df.head(3))
-    # df.to_csv('auction_results.csv', index=False)
+    df.to_csv('auction_results.csv', index=False)
