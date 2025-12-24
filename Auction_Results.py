@@ -127,8 +127,8 @@ try:
 
             essay = get_element_text(driver, By.ID, "MainContent_essay")
 
-            date = get_element_text(driver, By.ID, "MainContent_AuctionInfo_divInfo").split("\n")[len(date) - 1]
-            day, month, year = parse_date(date)
+            date = get_element_text(driver, By.ID, "MainContent_AuctionInfo_divInfo").split("\n")
+            day, month, year = parse_date(date[len(date) - 1])
 
             # Adding to the dataframe
             df.loc[len(df)] = [
