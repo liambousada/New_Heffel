@@ -11,6 +11,7 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.edge.options import Options
 from parse import parse_date, parse_estimate, parse_price, parse_size
 from Email import send_error_email
+from urllib3.exceptions import ReadTimeoutError
 
 def human_delay(min_seconds=2, max_seconds=5):
     """
@@ -93,49 +94,53 @@ try:
 
         # Traverse through the pieces for the current auction (This will only excecute if there are any)
         for piece in piece_links:
-            
-            # Navigate to the piece page
-            driver.get(piece)
-            human_delay(5, 7)
-
-            # All the scraping logic
-            auction = get_element_text(driver, By.ID, "MainContent_AuctionInfo_divInfo")
-            print(auction.replace("\n", "; "))
-
             try:
-                image_link = driver.find_element(By.ID, "MainContent_bigImage").get_attribute("src")
-            except:
-                image_link = "N/A"
+                # Navigate to the piece page
+                driver.get(piece)
+                human_delay(5, 7)
 
-            lot_number = get_element_text(driver, By.ID, "MainContent_lotNumber")
+                # All the scraping logic
+                auction = get_element_text(driver, By.ID, "MainContent_AuctionInfo_divInfo")
+                print(auction.replace("\n", "; "))
 
-            artist = get_element_text(driver, By.ID, "MainContent_HyperLinkArtistName")
+                try:
+                    image_link = driver.find_element(By.ID, "MainContent_bigImage").get_attribute("src")
+                except:
+                    image_link = "N/A"
 
-            title = get_element_text(driver, By.ID, "MainContent_itemTitle")
+                lot_number = get_element_text(driver, By.ID, "MainContent_lotNumber")
 
-            medium = get_element_text(driver, By.ID, "MainContent_media")
+                artist = get_element_text(driver, By.ID, "MainContent_HyperLinkArtistName")
 
-            size = get_element_text(driver, By.ID, "MainContent_dimensionIN")
-            width, height = parse_size(size)
+                title = get_element_text(driver, By.ID, "MainContent_itemTitle")
 
-            estimate = get_element_text(driver, By.ID, "MainContent_estimate")
-            lowbound, highbound = parse_estimate(estimate)
+                medium = get_element_text(driver, By.ID, "MainContent_media")
 
-            price = parse_price(get_element_text(driver, By.ID, "MainContent_soldFor"))
+                size = get_element_text(driver, By.ID, "MainContent_dimensionIN")
+                width, height = parse_size(size)
 
-            provenance = get_element_text(driver, By.ID, "MainContent_provenance").replace("\n", "; ")
+                estimate = get_element_text(driver, By.ID, "MainContent_estimate")
+                lowbound, highbound = parse_estimate(estimate)
 
-            essay = get_element_text(driver, By.ID, "MainContent_essay")
+                price = parse_price(get_element_text(driver, By.ID, "MainContent_soldFor"))
 
-            date = get_element_text(driver, By.ID, "MainContent_AuctionInfo_divInfo").split("\n")
-            day, month, year = parse_date(date[len(date) - 1])
+                provenance = get_element_text(driver, By.ID, "MainContent_provenance").replace("\n", "; ")
 
-            # Adding to the dataframe
-            df.loc[len(df)] = [
-            auction, lot_number, artist, title, day, month, year, 
-            price, lowbound, highbound, width, height, medium, 
-            essay, provenance, image_link
-            ]
+                essay = get_element_text(driver, By.ID, "MainContent_essay")
+
+                date = get_element_text(driver, By.ID, "MainContent_AuctionInfo_divInfo").split("\n")
+                day, month, year = parse_date(date[len(date) - 1])
+
+                # Adding to the dataframe
+                df.loc[len(df)] = [
+                auction, lot_number, artist, title, day, month, year, 
+                price, lowbound, highbound, width, height, medium, 
+                essay, provenance, image_link
+                ]
+
+            except ReadTimeoutError:
+                print(f"Timeout occurred while trying to load {piece}. Skipping to next...")
+                continue  # Moves to the next iteration of the loop
 
 except Exception as e:
     print(f"An error occurred during WebDriver operation: {e}")
